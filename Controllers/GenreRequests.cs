@@ -20,7 +20,7 @@ namespace TunaPianoAPI.Controllers
 
             app.MapGet("/genres/{id}", (TunaPianoDbContext db, int id) =>
             {
-                var singleGenre = db.Genres.SingleOrDefault(g => g.Id == id);
+                var singleGenre = db.Genres.Include(g => g.Songs).SingleOrDefault(g => g.Id == id);
                 if (singleGenre == null)
                 {
                     return Results.NotFound();
