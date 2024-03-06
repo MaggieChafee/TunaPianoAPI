@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TunaPianoAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c901b7fa74a225ed3fb346f4ade205157e5594c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef671fca9e60dcdf39a213641d9940a7fcd13681")]
 [assembly: System.Reflection.AssemblyProductAttribute("TunaPianoAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TunaPianoAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

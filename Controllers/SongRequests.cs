@@ -21,7 +21,11 @@ namespace TunaPianoAPI.Controllers
 
             app.MapGet("/songs/{id}", (TunaPianoDbContext db, int id) =>
             {
-                Song song = db.Songs.Include(s => s.Genres).SingleOrDefault(s => s.Id == id);
+                Song song = db.Songs
+                    .Where(s => s.Id == id)
+                    .Include(s => s.Genres)
+                    .Include(s => s.Artist)
+                    .FirstOrDefault();
                 if (song == null)
                 {
                     return Results.NotFound();
@@ -44,7 +48,7 @@ namespace TunaPianoAPI.Controllers
                 return Results.Created();
             });
 
-            app.MapPut("/songs/{id}", (TunaPianoDbContext db, int Id, Song song) =>
+            app.MapPut("/songs/{id}", (TunaPianoDbContext db, int Id, PostSongDto song) =>
             {
                 Song songToUpdate = db.Songs.FirstOrDefault(s => s.Id == Id);
                 if (songToUpdate == null)
@@ -56,7 +60,7 @@ namespace TunaPianoAPI.Controllers
                 songToUpdate.ArtistId = song.ArtistId;
                 songToUpdate.Title = song.Title;
                 db.SaveChanges();
-                return Results.Ok();
+                return Results.Ok(songToUpdate);
             });
 
             app.MapDelete("/songs/{id}", (TunaPianoDbContext db, int id) =>
@@ -73,7 +77,7 @@ namespace TunaPianoAPI.Controllers
 
             app.MapPost("/songs/assign-genre", (TunaPianoDbContext db, SongGenreDto dto) =>
             {
-                var songToAssign = db.Songs.SingleOrDefault(s => s.Id == dto.SongId);
+                var songToAssign = db.Songs.Include(s => s.Genres).SingleOrDefault(s => s.Id == dto.SongId);
                 var addGenre = db.Genres.SingleOrDefault(g => g.Id == dto.GenreId);
                 if (songToAssign == null || addGenre == null)
                 {

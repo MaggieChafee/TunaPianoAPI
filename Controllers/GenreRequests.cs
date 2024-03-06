@@ -1,6 +1,7 @@
 ﻿using TunaPianoAPI.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using TunaPianoAPI.DTOs;
 
 namespace TunaPianoAPI.Controllers
 {
@@ -28,14 +29,18 @@ namespace TunaPianoAPI.Controllers
                 return Results.Ok(singleGenre);
             });
 
-            app.MapPost("/genres", (TunaPianoDbContext db, Genre newGenre) =>
+            app.MapPost("/genres", (TunaPianoDbContext db, PostGenreDto dto) =>
             {
+                Genre newGenre = new()
+                {
+                    Description = dto.Description,
+                };
                 db.Genres.Add(newGenre);
                 db.SaveChanges();
                 return Results.Created($"/genres/{newGenre.Id}", newGenre);
             });
 
-            app.MapPut("/genres/{id}", (TunaPianoDbContext db, Genre genre, int id) =>
+            app.MapPut("/genres/{id}", (TunaPianoDbContext db, PostGenreDto genre, int id) =>
             { 
                 Genre genreToUpdate = db.Genres.SingleOrDefault(gen => gen.Id == id);
                 if (genreToUpdate == null)
