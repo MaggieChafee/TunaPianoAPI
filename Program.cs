@@ -35,5 +35,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 GenreRequests.Map(app);
+SongRequests.Map(app);
 
 app.Run();
