@@ -1,6 +1,7 @@
 ﻿using TunaPianoAPI.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using TunaPianoAPI.DTOs;
 
 namespace TunaPianoAPI.Controllers
 {
@@ -13,9 +14,54 @@ namespace TunaPianoAPI.Controllers
                 var allGenres = db.Genres.ToList();
                 if (allGenres == null) 
                 {
-                    return Results.BadRequest();
+                    return Results.NotFound();
                 }
                 return Results.Ok(allGenres);
+            });
+
+            app.MapGet("/genres/{id}", (TunaPianoDbContext db, int id) =>
+            {
+                var singleGenre = db.Genres.Include(g => g.Songs).SingleOrDefault(g => g.Id == id);
+                if (singleGenre == null)
+                {
+                    return Results.NotFound();
+                }
+                return Results.Ok(singleGenre);
+            });
+
+            app.MapPost("/genres", (TunaPianoDbContext db, PostGenreDto dto) =>
+            {
+                Genre newGenre = new()
+                {
+                    Description = dto.Description,
+                };
+                db.Genres.Add(newGenre);
+                db.SaveChanges();
+                return Results.Created($"/genres/{newGenre.Id}", newGenre);
+            });
+
+            app.MapPut("/genres/{id}", (TunaPianoDbContext db, PostGenreDto genre, int id) =>
+            { 
+                Genre genreToUpdate = db.Genres.SingleOrDefault(gen => gen.Id == id);
+                if (genreToUpdate == null)
+                {
+                    return Results.NotFound();
+                }
+                genreToUpdate.Description = genre.Description;
+                db.SaveChanges();
+                return Results.Ok(genre);
+            });
+
+            app.MapDelete("/genres/{id}", (TunaPianoDbContext db, int id) =>
+            {
+                Genre genreToDelete = db.Genres.SingleOrDefault(gen => gen.Id == id);
+                if (genreToDelete == null)
+                {
+                    return Results.NotFound();
+                }
+                db.Genres.Remove(genreToDelete);
+                db.SaveChanges();
+                return Results.NoContent();
             });
         }
     }
